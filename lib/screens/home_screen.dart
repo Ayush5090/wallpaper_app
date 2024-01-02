@@ -22,7 +22,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
   late WallpaperModel wallpapers;
   var searchController = TextEditingController();
   int page = 1;
@@ -30,7 +29,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    BlocProvider.of<WallpaperBloc>(context).add(GetTrendingWallpaperEvent(pageNo: '1', perPage: '25'));
+    BlocProvider.of<WallpaperBloc>(context)
+        .add(GetTrendingWallpaperEvent(pageNo: '1', perPage: '25'));
   }
 
   @override
@@ -46,85 +46,119 @@ class _HomeScreenState extends State<HomeScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(left: 15, top: 25, bottom: 25, right: 15),
+                  padding: const EdgeInsets.only(
+                      left: 15, top: 25, bottom: 25, right: 15),
                   child: TextFormField(
                     controller: searchController,
-                    validator: (value){
-                      if(value!.isEmpty){
+                    validator: (value) {
+                      if (value!.isEmpty) {
                         return 'Please enter your keyword first';
                       }
                     },
                     decoration: InputDecoration(
-                      filled: true,
-                      fillColor: Colors.white,
-                      hintText: 'Find Wallpaper',
-                      contentPadding: EdgeInsets.all(15),
-                      suffixIcon: TextButton(
-                        onPressed: (){
-                          if(formKey.currentState!.validate()){
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => SearchScreen(query: searchController.text.toString(),),));
-                          }
-                        },
-                        style: TextButton.styleFrom(
-                          backgroundColor: Colors.cyanAccent.withOpacity(0.1)
+                        filled: true,
+                        fillColor: Colors.white,
+                        hintText: 'Find Wallpaper',
+                        contentPadding: const EdgeInsets.all(15),
+                        suffixIcon: TextButton(
+                          onPressed: () {
+                            if (formKey.currentState!.validate()) {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => SearchScreen(
+                                      query: searchController.text.toString(),
+                                    ),
+                                  ));
+                            }
+                          },
+                          style: TextButton.styleFrom(
+                              backgroundColor:
+                                  Colors.cyanAccent.withOpacity(0.1)),
+                          child: Icon(
+                            Icons.search,
+                            color: Colors.cyan,
+                          ),
                         ),
-                        child: Icon(Icons.search, color: Colors.cyan,),
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15)
-                      )
-                    ),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15))),
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 15,),
+                  padding: const EdgeInsets.only(
+                    left: 15,
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('Latest Wallpapers', style: mTextStyle16(),),
+                          Text(
+                            'Latest Wallpapers',
+                            style: mTextStyle16(),
+                          ),
                           InkWell(
-                            onTap: (){
-                              BlocProvider.of<WallpaperBloc>(context).add(GetTrendingWallpaperEvent(perPage: '25', pageNo: '${page++}'));
-                            },
-                              child: Text('Load More  ', style: mTextStyle12(color: Colors.cyan, fontWeight: FontWeight.w500),)),
+                              onTap: () {
+                                BlocProvider.of<WallpaperBloc>(context).add(
+                                    GetTrendingWallpaperEvent(
+                                        perPage: '25', pageNo: '${page++}'));
+                              },
+                              child: Text(
+                                'Load More  ',
+                                style: mTextStyle12(
+                                    color: Colors.cyan,
+                                    fontWeight: FontWeight.w500),
+                              )),
                         ],
                       ),
                       SizedBox(
-                        height: height*0.42,
+                        height: height * 0.42,
                         child: BlocBuilder<WallpaperBloc, WallpaperState>(
                           builder: (context, state) {
-                            if(state is WallpaperLoadingState){
-                              return Center(child: CircularProgressIndicator(),);
-                            } else if(state is WallpaperLoadedState){
+                            if (state is WallpaperLoadingState) {
+                              return Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            } else if (state is WallpaperLoadedState) {
                               wallpapers = state.wallpapers;
-                                return ListView.builder(
+                              return ListView.builder(
                                 scrollDirection: Axis.horizontal,
-                                  itemCount: wallpapers.photos!.length,
-                                  itemBuilder: (context, index) {
-                                    var image = wallpapers.photos![index].src!.portrait;
-                                    return InkWell(
-                                      onTap: (){
-                                        Navigator.push(context, MaterialPageRoute(builder: (context) => WallpaperFullScreen(imgUrl: image.toString()),));
-                                      },
-                                      child: Container(
-                                        width: width*0.5,
-                                        margin: EdgeInsets.only(top: 10, right: 16),
-                                        decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(15),
-                                            image: DecorationImage(
-                                                image: NetworkImage(image.toString()),
-                                                fit: BoxFit.cover
-                                            )
-                                        ),
-                                      ),
-                                    );
-                                  },);
-                            } if(state is WallpaperErrorState) {
-                              return Center(child: Text(state.error.toString()),);
-                            } else{
+                                itemCount: wallpapers.photos!.length,
+                                itemBuilder: (context, index) {
+                                  var image =
+                                      wallpapers.photos![index].src!.portrait;
+                                  return InkWell(
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                WallpaperFullScreen(
+                                                    imgUrl: image.toString()),
+                                          ));
+                                    },
+                                    child: Container(
+                                      width: width * 0.5,
+                                      margin:
+                                          EdgeInsets.only(top: 10, right: 16),
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(15),
+                                          image: DecorationImage(
+                                              image: NetworkImage(
+                                                  image.toString()),
+                                              fit: BoxFit.cover)),
+                                    ),
+                                  );
+                                },
+                              );
+                            }
+                            if (state is WallpaperErrorState) {
+                              return Center(
+                                child: Text(state.error.toString()),
+                              );
+                            } else {
                               return Container();
                             }
                           },
@@ -138,22 +172,37 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Categories', style: mTextStyle16(),),
-                      SizedBox(height: height*0.01,),
+                      Text(
+                        'Categories',
+                        style: mTextStyle16(),
+                      ),
+                      SizedBox(
+                        height: height * 0.01,
+                      ),
                       Column(
                         children: [
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               InkWell(
-                                onTap: ()=> Navigator.push(context, MaterialPageRoute(builder: (context) => AbstractScreen(),)),
+                                onTap: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => AbstractScreen(),
+                                    )),
                                 child: CategoriesContainer(
-                                    assetImg: 'assets/images/abstract.jpg', text: 'Abstract'),
+                                    assetImg: 'assets/images/abstract.jpg',
+                                    text: 'Abstract'),
                               ),
                               InkWell(
-                                onTap: ()=> Navigator.push(context, MaterialPageRoute(builder: (context) => NatureScreen(),)),
+                                onTap: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => NatureScreen(),
+                                    )),
                                 child: CategoriesContainer(
-                                    assetImg: 'assets/images/nature.jpg', text: 'Nature'),
+                                    assetImg: 'assets/images/nature.jpg',
+                                    text: 'Nature'),
                               ),
                             ],
                           ),
@@ -161,14 +210,24 @@ class _HomeScreenState extends State<HomeScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               InkWell(
-                                onTap: ()=> Navigator.push(context, MaterialPageRoute(builder: (context) => SpaceScreen(),)),
+                                onTap: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => SpaceScreen(),
+                                    )),
                                 child: CategoriesContainer(
-                                    assetImg: 'assets/images/space.jpg', text: 'Space'),
+                                    assetImg: 'assets/images/space.jpg',
+                                    text: 'Space'),
                               ),
                               InkWell(
-                                onTap: ()=> Navigator.push(context, MaterialPageRoute(builder: (context) => AnimalsScreen(),)),
+                                onTap: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => AnimalsScreen(),
+                                    )),
                                 child: CategoriesContainer(
-                                    assetImg: 'assets/images/animal.jpg', text: 'Animals'),
+                                    assetImg: 'assets/images/animal.jpg',
+                                    text: 'Animals'),
                               ),
                             ],
                           ),
